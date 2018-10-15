@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 from mongoSitting import *
 from multiprocessing import Pool
-keyWord = 'python'
+keyWord = '嵌入式'
 
 def string_handle(soup):
     ul = soup.find(attrs={'class': 'sojob-list'})
@@ -11,13 +11,14 @@ def string_handle(soup):
         a=li.find_all('a')
         span = li.find_all('span')
         position = {
+            'keyWord': keyWord,
             'companyName':a[2].text.lstrip(),
             'positionName':a[0].text.lstrip(),
             'jobNature':'全职',
             'workYear':span[2].text,
             'education':span[1].text,                   #     test  出错******************************************
             'city':a[1].text.lstrip(),
-            'salary':span[0].text+'(年薪)'
+            'salary':(float((span[0].text[:-1]).split('-')[0])+float((span[0].text[:-1]).split('-')[1]))/2
         }
         sava_to_mongo(position)
         print(position)

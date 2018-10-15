@@ -1,0 +1,37 @@
+db.getCollection('zhaopin20').aggregate([{$group:{_id:'$keyWord',avgSalary:{$avg:"$salary"}}}])//平均数
+
+var t1=db.zhaopin20.find({"keyWord":"C++"});while(t1.hasNext()) db.cppData.insert(t1.next())   //游标转储
+
+var keyWord=['C++','java','python','前端','算法','嵌入式']                                       //薪酬等级转储
+for(i=0;i<6;i++){
+    var t1=db.zhaopin20.find({"keyWord":keyWord[i]});
+    var num=[0,0,0,0,0,0];
+    var j=0;
+    while(t1.hasNext()){
+        var s=t1.next().salary;
+        if(s<5){
+            num[0]++;
+            }
+        if(s<7){
+            num[1]++;
+            }
+        if(s<9){
+            num[2]++;continue;
+            }
+        if(s<11){
+            num[3]++;continue;
+            }
+        if(s<15){
+            num[4]++;continue;
+            }
+        if(s>15){
+            num[5]++;continue;
+            }
+        }
+        for(j=0;j<6;j++){
+            db.getCollection('salaryRange').insert({"keyWord":keyWord[i],"range":j,"num":num[j]})
+            }
+    }
+
+
+db.getCollection('qianduanData').aggregate([{$group:{_id:"$city",avg:{$avg:'$salary'}}},{$sort:{"avg":-1}}])             #分组平均值排序
