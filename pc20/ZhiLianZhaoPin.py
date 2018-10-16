@@ -9,7 +9,7 @@ def string_2_json(res):
         if pos['salary'] =='薪资面议':
             continue
         position = {
-            
+
             'keyWord': keyword,
             'companyName':pos['company']['name'],
             'positionName':pos['jobName'],
