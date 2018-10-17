@@ -4,17 +4,17 @@ import time
 from multiprocessing import Pool
 from mongoSitting import *
 
-keyword = '嵌入式'
+keyWord = ["C++","python","java"]
 def open_sitting_file(i):
     with open('sitting.json',encoding='utf-8') as f:
         sitting = json.load(f)
         return sitting['user-agent'][i];
 
-def processing_result(res):
+def processing_result(res,keyWord):
     items=res['content']['positionResult']['result']
     for item in items:
         position = {
-            'keyWord': keyword,
+            'keyWord': keyWord,
             'companyName':item['companyShortName'],
             'positionName':item['positionName'],
             'jobNature':item['jobNature'],
@@ -32,7 +32,7 @@ def main(i):
     data = {
         'first':'true',
         'pn':i,
-        'kd':keyword
+        'kd':keyWord[i]
     }
     headers = {
      'User-Agent': open_sitting_file(i),
@@ -44,7 +44,7 @@ def main(i):
     }
     res = requests.post(url,data=data,headers=headers)
     json_result=res.json()
-    processing_result(json_result)
+    processing_result(json_result,keyWord[i])
     time.sleep(5)
 
 if __name__=='__main__':

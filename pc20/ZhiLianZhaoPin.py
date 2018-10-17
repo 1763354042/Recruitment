@@ -1,16 +1,16 @@
 import requests
 from multiprocessing import Pool
 from mongoSitting import *
-keyword = '嵌入式'
+keyWord = ["C++","python","java"]
 
-def string_2_json(res):
+def string_2_json(res,keyWord):
     json_result = res.json()['data']['results']
     for pos in json_result:
         if pos['salary'] =='薪资面议':
             continue
         position = {
 
-            'keyWord': keyword,
+            'keyWord': keyWord,
             'companyName':pos['company']['name'],
             'positionName':pos['jobName'],
             'jobNature':pos['emplType'],
@@ -24,9 +24,9 @@ def string_2_json(res):
 
 
 def main(i):
-    url = 'https://fe-api.zhaopin.com/c/i/sou?start='+str(i*60)+'pageSize=60&cityId=489&salary=4001,6000&workExperience=-1&education=-1&companyType=-1&employmentType=-1&jobWelfareTag=-1&kw='+keyword+'&kt=3'
+    url = 'https://fe-api.zhaopin.com/c/i/sou?start='+str(i*60)+'pageSize=60&cityId=489&salary=4001,6000&workExperience=-1&education=-1&companyType=-1&employmentType=-1&jobWelfareTag=-1&kw='+keyWord[i%3]+'&kt=3'
     res=requests.get(url)
-    string_2_json(res)
+    string_2_json(res,keyWord[i%3])
 
 if __name__ == '__main__':
     pool = Pool()
