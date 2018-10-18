@@ -1,13 +1,4 @@
 {
-  "user-agent":["Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)",
-                  "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.2)",
-                  "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)",
-                  "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT)",
-                  "Mozilla/5.0 (Windows; U; Windows NT 5.2) Gecko/2008070208 Firefox/3.0.1",
-                  "Mozilla/5.0 (Windows; U; Windows NT 5.1) Gecko/20070309 Firefox/2.0.0.3",
-                  "Mozilla/5.0 (Windows; U; Windows NT 5.1) Gecko/20070803 Firefox/1.5.0.12",
-                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36"
-                  ]
 
-
+  "keyWord":["java","python","C++","嵌入式","前端","算法"]
 }
