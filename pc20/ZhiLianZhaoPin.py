@@ -1,7 +1,8 @@
 import requests
 from multiprocessing import Pool
 from mongoSitting import *
-keyWord = ["C++","python","java"]
+from sitting import *
+
 
 def string_2_json(res,keyWord):
     json_result = res.json()['data']['results']
@@ -9,11 +10,9 @@ def string_2_json(res,keyWord):
         if pos['salary'] =='薪资面议':
             continue
         position = {
-
             'keyWord': keyWord,
             'companyName':pos['company']['name'],
             'positionName':pos['jobName'],
-            'jobNature':pos['emplType'],
             'workYear':pos['workingExp']['name'],
             'education':pos['eduLevel']['name'],
             'city':pos['city']['items'][0]['name'],
@@ -24,9 +23,14 @@ def string_2_json(res,keyWord):
 
 
 def main(i):
-    url = 'https://fe-api.zhaopin.com/c/i/sou?start='+str(i*60)+'pageSize=60&cityId=489&salary=4001,6000&workExperience=-1&education=-1&companyType=-1&employmentType=-1&jobWelfareTag=-1&kw='+keyWord[i%3]+'&kt=3'
-    res=requests.get(url)
-    string_2_json(res,keyWord[i%3])
+    keyWord = get_keyWord(i)
+    url = 'https://fe-api.zhaopin.com/c/i/sou?start='+str(i*60)+'pageSize=60&cityId=489&salary=4001,6000&workExperience=-1&education=-1&companyType=-1&employmentType=-1&jobWelfareTag=-1&kw='+keyWord+'&kt=3'
+
+    headers = {
+        'proxies' :'https://' + get_proxy(),
+    }
+    res=requests.get(url,headers=headers)
+    string_2_json(res,keyWord)
 
 if __name__ == '__main__':
     pool = Pool()

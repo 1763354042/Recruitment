@@ -4,12 +4,7 @@ import re
 from bs4 import BeautifulSoup as bs
 from mongoSitting import *
 from multiprocessing import Pool
-keyWord = ["C++","python","java"]
-
-def open_sittintg_file(i):
-    with open('sitting.json','r') as f:
-        res=json.load(f)
-        return res['user-agent'][i];
+from sitting import *
 
 def string_handle(res,keyWord):
     soup = bs(res,'lxml')
@@ -20,7 +15,6 @@ def string_handle(res,keyWord):
             'keyWord':keyWord,
             'companyName':li.find_all('h3')[1].find('a').text,
             'positionName':li.find(attrs={'class':'job-title'}).text,
-            'jobNature':'全职',
             'workYear':(li.find(attrs={'class':'info-primary'}).find('p').text).split(' ')[2][:-2],     #使用beautiSoup对其选择后，使用字符串拼接
             'education':(li.find(attrs={'class':'info-primary'}).find('p').text).split(' ')[2][-2:],
             'city':(li.find(attrs={'class':'info-primary'}).find('p').text).split(' ')[0],
@@ -30,15 +24,22 @@ def string_handle(res,keyWord):
         sava_to_mongo(position)
 
 def main(i):
+    keyWord = get_keyWord(i)
+    url = 'https://www.zhipin.com/c100010000/h_100010000/?query='+keyWord+'&page='+str(i)+'&ka=page-'+str(i)
+    proxy = get_proxy()
+    # proxies = {
+    #     'https':'https://'+proxy,
+    #     'http':'http://'+proxy,
+    # }
     headers = {
-        'user-agent':open_sittintg_file(i%7)
-    }
-    url = 'https://www.zhipin.com/c100010000/h_100010000/?query='+keyWord[i%3]+'&page='+str(i)+'&ka=page-'+str(i)
+        'user-agent': 'Mozilla/5.0(Windows NT 10.0;Win64;x64) AppleWebKit/537.36(KHTML, likeGecko) Chrome/70.0.3538.67Safari/537.36',
+        'proxies':'https://'+proxy
 
+    }
     res = requests.get(url,headers=headers).text
     print(res)
-    string_handle(res,keyWord[i%3])
+    string_handle(res,keyWord)
 
 if __name__=='__main__':
     pool = Pool()
-    pool.map(main,[i*1 for i in range(1,30)])
+    pool.map(main,[i*1 for i in range(0,2)])
