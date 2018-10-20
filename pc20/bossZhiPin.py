@@ -1,10 +1,10 @@
 import requests
-import json
-import re
 from bs4 import BeautifulSoup as bs
 from mongoSitting import *
 from multiprocessing import Pool
 from sitting import *
+
+keyWordLen = get_keyWordLen()
 
 def string_handle(res,keyWord):
     soup = bs(res,'lxml')
@@ -24,21 +24,16 @@ def string_handle(res,keyWord):
         sava_to_mongo(position)
 
 def main(i):
-    keyWord = get_keyWord(i)
-    url = 'https://www.zhipin.com/c100010000/h_100010000/?query='+keyWord+'&page='+str(i)+'&ka=page-'+str(i)
-    proxy = get_proxy()
-    # proxies = {
-    #     'https':'https://'+proxy,
-    #     'http':'http://'+proxy,
-    # }
-    headers = {
-        'user-agent': 'Mozilla/5.0(Windows NT 10.0;Win64;x64) AppleWebKit/537.36(KHTML, likeGecko) Chrome/70.0.3538.67Safari/537.36',
-        'proxies':'https://'+proxy
-
-    }
-    res = requests.get(url,headers=headers).text
-    print(res)
-    string_handle(res,keyWord)
+    for j in range(0,keyWordLen):
+        keyWord = get_keyWord(j)
+        url = 'https://www.zhipin.com/c100010000/h_100010000/?query='+keyWord+'&page='+str(i)+'&ka=page-'+str(i)
+        proxy = get_proxy()
+        headers = {
+            'user-agent': 'Mozilla/5.0(Windows NT 10.0;Win64;x64) AppleWebKit/537.36(KHTML, likeGecko) Chrome/70.0.3538.67Safari/537.36',
+            'proxies':'https://'+proxy
+            }
+        res = requests.get(url,headers=headers).text
+        string_handle(res,keyWord)
 
 if __name__=='__main__':
     pool = Pool()

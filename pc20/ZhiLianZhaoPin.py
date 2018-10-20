@@ -3,6 +3,7 @@ from multiprocessing import Pool
 from mongoSitting import *
 from sitting import *
 
+keyWordLen = get_keyWordLen()
 
 def string_2_json(res,keyWord):
     json_result = res.json()['data']['results']
@@ -23,15 +24,15 @@ def string_2_json(res,keyWord):
 
 
 def main(i):
-    keyWord = get_keyWord(i)
-    url = 'https://fe-api.zhaopin.com/c/i/sou?start='+str(i*60)+'pageSize=60&cityId=489&salary=4001,6000&workExperience=-1&education=-1&companyType=-1&employmentType=-1&jobWelfareTag=-1&kw='+keyWord+'&kt=3'
-
-    headers = {
-        'proxies' :'https://' + get_proxy(),
-    }
-    res=requests.get(url,headers=headers)
-    string_2_json(res,keyWord)
+    for j in range(0,keyWordLen):
+        keyWord = get_keyWord(j)
+        url = 'https://fe-api.zhaopin.com/c/i/sou?start='+str(i*60)+'pageSize=60&cityId=489&salary=4001,6000&workExperience=-1&education=-1&companyType=-1&employmentType=-1&jobWelfareTag=-1&kw='+keyWord+'&kt=3'
+        headers = {
+            'proxies' :'https://' + get_proxy(),
+        }
+        res=requests.get(url,headers=headers)
+        string_2_json(res,keyWord)
 
 if __name__ == '__main__':
     pool = Pool()
-    pool.map(main,[i*1 for i in range(0,30)])
+    pool.map(main,[i*1 for i in range(0,10)])

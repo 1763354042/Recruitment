@@ -3,6 +3,8 @@ from mongoSitting import sava_to_mongo
 from multiprocessing import Pool
 from sitting import *
 
+keyWordLen = get_keyWordLen()
+
 def sava_result(resjson):
     print(resjson)
     for item in resjson["list"]:
@@ -19,15 +21,15 @@ def sava_result(resjson):
         except:
             continue
 def main(i):
-
-    keyWord= get_keyWord(i)
-    firstUrl = 'https://so.dajie.com/job/search'
-    url = 'https://so.dajie.com/job/ajax/search/filter?keyword='+keyWord+'&order=0&city=&recruitType=&salary=&experience=&page='+str(i+1)+'&positionFunction=&_CSRFToken=ZHc07e-ibW9qugRFMAllwA6MvdUiieGIdXGM4w1h&ajax=1'
-    session = requests.session()
-    session.get(firstUrl)
-    session.headers['referer'] = firstUrl
-    response = session.get(url)
-    sava_result(response.json()["data"])
+    for j in range(0,keyWordLen):
+        keyWord= get_keyWord(j)
+        firstUrl = 'https://so.dajie.com/job/search'
+        url = 'https://so.dajie.com/job/ajax/search/filter?keyword='+keyWord+'&order=0&city=&recruitType=&salary=&experience=&page='+str(i+1)+'&positionFunction=&_CSRFToken=ZHc07e-ibW9qugRFMAllwA6MvdUiieGIdXGM4w1h&ajax=1'
+        session = requests.session()
+        session.get(firstUrl)
+        session.headers['referer'] = firstUrl
+        response = session.get(url)
+        sava_result(response.json()["data"])
 
 if __name__ == '__main__':
     pool = Pool()
